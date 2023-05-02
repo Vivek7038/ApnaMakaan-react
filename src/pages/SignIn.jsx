@@ -32,7 +32,7 @@ const SignIn = () => {
         navigate("/");
         toast.success("Sign in successfully");
       }
-    } catch (error) { 
+    } catch (error) {
       toast.error(error.message);
     }
   }
