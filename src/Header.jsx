@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default function Header() {
   const [pageState, setPageState] = useState("Sign in");
   const location = useLocation();
   const navigate = useNavigate();
-//   const auth = getAuth();
  
   function pathMatchRoute(route) {
     if (route === location.pathname) {
