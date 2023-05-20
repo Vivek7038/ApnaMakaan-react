@@ -7,7 +7,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Spinner from "../components/Spinner";
-import { setLogLevel } from "firebase/app";
 import { toast } from "react-toastify";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
@@ -208,12 +207,13 @@ const CreateListing = () => {
             <p className="text-lg font-semibold ">Beds </p>
             <input
               type="number"
+              id="bedrooms"
               value={bedrooms}
               onChange={onChange}
               min="1"
               max="50"
               required
-              className="w-full px-4 px-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duratio-150 ease-in-out
+              className="w-full  px-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duratio-150 ease-in-out
               focus:text-gray-700 bg-white focus:border-slate-600 text-center"
             />
           </div>
@@ -221,6 +221,7 @@ const CreateListing = () => {
             <p className="text-lg font-semibold ">Baths </p>
             <input
               type="number"
+              id="bathrooms"
               value={bathrooms}
               onChange={onChange}
               min="1"
@@ -330,7 +331,7 @@ const CreateListing = () => {
           type="text"
           placeholder="description"
           id="description"
-          maxLength="32"
+          maxLength="42"
           minLength="10"
           required
           value={description}
