@@ -17,9 +17,9 @@ import Header from "./Header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Admin from "./Admin.jsx";
+import CreateListing from "./pages/CreateListing";
 
-
-// Timestamp 5:46
+// Timestamp 9:56
 function App() {
   return (
     <>
@@ -35,7 +35,9 @@ function App() {
           <Route path="/profile" element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
           </Route>
-
+          <Route path="/create-listing" element={<PrivateRoute />}>
+            <Route path="/create-listing" element={<CreateListing />} />
+          </Route>
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
@@ -56,3 +58,12 @@ function App() {
 }
 
 export default App;
+
+/* 
+ more to add
+ - search bar 
+ - refer to realtor.com
+ -add  dynamic pagination
+ - There is always something are you 
+ - 
+*/
