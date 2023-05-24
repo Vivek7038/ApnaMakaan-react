@@ -26,16 +26,17 @@ else{
   return (
     <div className="bg-white border-b shadow-sm sticky top-0 z-40">
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
-        <div>
+        <div className="flex ">
           <img
-            src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIiZOFbrlZ9Sl12DpKJGK9QphlF3dGt0k0QxQkH7gn3uCvqXEY6FsaHLMdOwmB5QHRvKg&usqp=CAU"
             alt="logo"
             className="h-5 cursor-pointer"
             onClick={() => navigate("/")}
           />
+          <h1 className="ml-3 cursor-pointer  text-sm font-semibold text-blue-700 border-b-[3px] border-b-transparent ">Propify</h1>
         </div>
         <div>
-          <ul className="flex space-x-10">
+          <ul className="flex space-x-10 ">
           <li
               className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
                 pathMatchRoute("/") && "text-black border-b-red-500"
