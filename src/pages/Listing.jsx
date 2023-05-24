@@ -54,7 +54,7 @@ export default function Listing() {
     
         effect="fade"
         modules={[EffectFade]}
-        autoplay={{ delay: 3000 }}
+        autoplay={{ delay: 1000 }}
       >
         {listing.imgUrls.map((url, index) => (
           <SwiperSlide key={index}>
