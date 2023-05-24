@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -27,7 +28,20 @@ const Profile = () => {
   });
 
   const { name, email } = formData;
-
+  function onEdit(listingID) {
+    navigate(`/edit-listing/${listingID}`);
+  }
+  // delete listing 
+  async function onDelete(listingID) {
+    if (window.confirm("Are you sure you want to delete ? ")) {
+      await  deleteDoc (doc(db , "listings" , listingID))
+      const  updatedListings= listings.filter(
+        (listing) => listing.id !==listingID
+      )
+      setListings(updatedListings)
+      toast.success("successfully deleted the listing")
+    }
+  }
   function onLogout() {
     auth.signOut();
     navigate("/");
@@ -62,6 +76,7 @@ const Profile = () => {
   useEffect(() => {
     async function fetchUserListings() {
       const listingRef = collection(db, "listings");
+      // only show  listing  created by current user 
       const q = query(
         listingRef,
         where("userRef", "==", auth.currentUser.uid),
@@ -150,9 +165,12 @@ const Profile = () => {
             <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {listings.map((listing) => (
                 <ListingItem
-                key={listing.id}
-                id={listing.id}
-                listing={listing.data} />
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
+                />
               ))}
             </ul>
           </>

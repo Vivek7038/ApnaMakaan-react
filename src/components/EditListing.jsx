@@ -9,15 +9,21 @@ import { v4 as uuidv4 } from "uuid";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "./../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreateListing = () => {
+  const [listing, setListing] = useState(null);
   const auth = getAuth();
   const navigate = useNavigate();
-
-  const [geolocationEnabled, setgeolocationEnabled] = useState(false);
   const [Loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
@@ -48,6 +54,30 @@ const CreateListing = () => {
     regularPrice,
     images,
   } = formData;
+  const params = useParams();
+  useEffect(() => {
+    setLoading(true);
+    async function fetchListing() {
+      const docRef = doc(db, "listings", params.listingId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        setFormData({ ...docSnap.data() });
+        setLoading(false);
+      } else {
+        navigate("/");
+        toast.error("Listing does not exist");
+      }
+    }
+    fetchListing();
+  }, [navigate, params.listingId]);
+  useEffect(() => {
+    if (listing && listing.userRef !== auth.currentUser.uid) {
+      toast.error("You can't edit this listing");
+      navigate("/");
+    }
+  }, [auth.currentUser.uid, listing, navigate]);
+
   if (Loading) {
     return <Spinner />;
   }
@@ -121,9 +151,10 @@ const CreateListing = () => {
     };
     delete formDataCopy.images;
     !formDataCopy.offer && delete formDataCopy.discountedPrice;
-    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    const docRef = doc(db, "listings", params.listingId);
+    await updateDoc(docRef, formDataCopy);
     setLoading(false);
-    toast.success("Listing created");
+    toast.success("Listing Edited");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   }
 
@@ -154,9 +185,7 @@ const CreateListing = () => {
 
   return (
     <main className="max-w-md px-2 mx-auto">
-      <h1 className="text-3xl text-center  mt-6  font-bold">
-        Create a Listing{" "}
-      </h1>
+      <h1 className="text-3xl text-center  mt-6  font-bold">Edit Listing </h1>
       <form onSubmit={onSubmit}>
         <p className="text-lg mt-6 font-semibold ">Sell / Rent </p>
         <div className="flex">
@@ -212,7 +241,7 @@ const CreateListing = () => {
               max="50"
               required
               className="w-full  px-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duratio-150 ease-in-out
-              focus:text-gray-700 bg-white focus:border-slate-600 text-center"
+                   focus:text-gray-700 bg-white focus:border-slate-600 text-center"
             />
           </div>
           <div>
@@ -226,7 +255,7 @@ const CreateListing = () => {
               max="50"
               required
               className="w-full px-4 px-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duratio-150 ease-in-out
-              focus:text-gray-700 bg-white focus:border-slate-600 text-center"
+                   focus:text-gray-700 bg-white focus:border-slate-600 text-center"
             />
           </div>
         </div>
@@ -295,35 +324,35 @@ const CreateListing = () => {
           className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:text-gray-700 focus:bg-white focus:border-slate-600 mb-6"
         />
         {/* {geolocationEnabled && (
-          <div className="flex space-x-6 justify-start mb-6">
-            <div className="">
-              <p className="text-lg font-semibold">Latitude</p>
-              <input
-                type="number"
-                id="latitude"
-                value={latitude}
-                onChange={onChange}
-                required
-                min="-90"
-                max="90"
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
-              />
-            </div>
-            <div className="">
-              <p className="text-lg font-semibold">Longitude</p>
-              <input
-                type="number"
-                id="longitude"
-                value={longitude}
-                onChange={onChange}
-                required
-                min="-180"
-                max="180"
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
-              />
-            </div>
-          </div>
-        )} */}
+               <div className="flex space-x-6 justify-start mb-6">
+                 <div className="">
+                   <p className="text-lg font-semibold">Latitude</p>
+                   <input
+                     type="number"
+                     id="latitude"
+                     value={latitude}
+                     onChange={onChange}
+                     required
+                     min="-90"
+                     max="90"
+                     className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+                   />
+                 </div>
+                 <div className="">
+                   <p className="text-lg font-semibold">Longitude</p>
+                   <input
+                     type="number"
+                     id="longitude"
+                     value={longitude}
+                     onChange={onChange}
+                     required
+                     min="-180"
+                     max="180"
+                     className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:bg-white focus:text-gray-700 focus:border-slate-600 text-center"
+                   />
+                 </div>
+               </div>
+             )} */}
         <p className="text-lg  font-semibold "> description </p>
         <textarea
           type="text"
@@ -428,7 +457,7 @@ const CreateListing = () => {
           type="submit"
           className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
         >
-          Create Listing
+          Edit Listing
         </button>
       </form>
     </main>

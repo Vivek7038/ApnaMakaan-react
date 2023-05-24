@@ -18,17 +18,22 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Admin from "./Admin.jsx";
 import CreateListing from "./pages/CreateListing";
+import EditListing from "./components/EditListing";
+import Listing from "./pages/Listing";
 
-// Timestamp 9:56
+
 function App() {
   return (
     <>
-      {" "}
       <Router>
         <Header />
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/offers" element={<Offers />} />
+          <Route
+            path="/category/:categoryName/:listingId"
+            element={<Listing />}
+          />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -37,6 +42,9 @@ function App() {
           </Route>
           <Route path="/create-listing" element={<PrivateRoute />}>
             <Route path="/create-listing" element={<CreateListing />} />
+          </Route>
+          <Route path="/edit-listing" element={<PrivateRoute />}>
+            <Route path="/edit-listing/:listingId" element={<EditListing />} />
           </Route>
           <Route path="/admin" element={<Admin />} />
         </Routes>
